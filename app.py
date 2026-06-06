@@ -7,7 +7,7 @@ from nlp_engine import FAQEngine
 app = Flask(
     __name__,
     static_folder="static",
-    template_folder="templates"
+    template_folder="."
 )
 CORS(app)  # Enable Cross-Origin Resource Sharing
 
@@ -126,7 +126,6 @@ def chat():
 
 if __name__ == "__main__":
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    os.makedirs(os.path.join(current_dir, "templates"), exist_ok=True)
     os.makedirs(os.path.join(current_dir, "static", "css"), exist_ok=True)
     os.makedirs(os.path.join(current_dir, "static", "js"), exist_ok=True)
     

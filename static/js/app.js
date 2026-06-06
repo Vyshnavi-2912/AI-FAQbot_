@@ -40,6 +40,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let searchDebounceTimeout = null;
     let searchHistory = [];
 
+    // Define API base URL for file:// protocol support
+    const isLocalFile = window.location.protocol === 'file:';
+    const API_BASE = isLocalFile ? 'http://127.0.0.1:5000' : '';
+
     // ================= LIGHTWEIGHT MARKDOWN PARSER =================
     function parseMarkdown(text) {
         if (!text) return "";
@@ -216,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showTypingIndicator();
 
         try {
-            const response = await fetch("/api/chat", {
+            const response = await fetch(`${API_BASE}/api/chat`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -263,7 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function getRelatedQuestions(category, currentId) {
         try {
-            const response = await fetch(`/api/faqs?category=${encodeURIComponent(category)}`);
+            const response = await fetch(`${API_BASE}/api/faqs?category=${encodeURIComponent(category)}`);
             const data = await response.json();
             if (data.success && data.faqs) {
                 const related = data.faqs
@@ -279,7 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ================= CATEGORIES SIDEBAR =================
     async function loadCategories() {
         try {
-            const response = await fetch("/api/categories");
+            const response = await fetch(`${API_BASE}/api/categories`);
             const data = await response.json();
             
             if (data.success && data.categories) {
@@ -361,7 +365,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Fetch category FAQs
         try {
             faqAccordionList.innerHTML = `<div class="loading-placeholder">Loading FAQs...</div>`;
-            const response = await fetch(`/api/faqs?category=${encodeURIComponent(categoryName)}`);
+            const response = await fetch(`${API_BASE}/api/faqs?category=${encodeURIComponent(categoryName)}`);
             const data = await response.json();
             
             if (data.success && data.faqs) {
@@ -473,7 +477,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Debounce search requests to preserve bandwidth & CPU cycles
         searchDebounceTimeout = setTimeout(async () => {
             try {
-                const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&limit=5`);
+                const response = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}&limit=5`);
                 const data = await response.json();
                 
                 if (data.success && data.results) {
