@@ -4,8 +4,7 @@
 *.pyo
 *.pyd
 
-# NLTK local data (dynamically downloaded on runtime, too large for git repository)
-backend/nltk_data/
+nltk_data/
 
 # Environments and configs
 .env
