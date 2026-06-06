@@ -131,6 +131,21 @@ if __name__ == "__main__":
     os.makedirs(os.path.join(current_dir, "static", "js"), exist_ok=True)
     
     port = int(os.environ.get("PORT", 5000))
-    print(f"Starting server on port {port}...")
-    app.run(host="127.0.0.1", port=port, debug=True)
+    
+    # Check if port is free; otherwise search dynamically for a free port
+    import socket
+    def get_free_port(start_port):
+        p = start_port
+        while p < start_port + 100:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                try:
+                    s.bind(("127.0.0.1", p))
+                    return p
+                except socket.error:
+                    p += 1
+        return start_port
+        
+    free_port = get_free_port(port)
+    print(f"Starting server on port {free_port}...")
+    app.run(host="127.0.0.1", port=free_port, debug=True)
 
