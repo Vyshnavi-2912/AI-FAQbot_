@@ -1,0 +1,19 @@
+# Python bytecode
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# NLTK local data (dynamically downloaded on runtime, too large for git repository)
+backend/nltk_data/
+
+# Environments and configs
+.env
+.venv/
+venv/
+ENV/
+env/
+
+# OS files
+.DS_Store
+Thumbs.db

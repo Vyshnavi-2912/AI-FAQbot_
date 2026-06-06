@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusFAQ AI - Smart Developer Chatbot</title>
+    <!-- Google Fonts: Outfit (headings) and Inter (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Main Style Sheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="app" class="app-container">
+        
+        <!-- ================= SIDEBAR: CATEGORIES ================= -->
+        <aside class="sidebar-panel" id="sidebarPanel">
+            <div class="sidebar-header">
+                <div class="logo-area">
+                    <div class="logo-icon"></div>
+                    <span class="logo-text">Nexus<span>FAQ</span> AI</span>
+                </div>
+                <button class="mobile-close-btn" id="closeSidebarBtn" aria-label="Close sidebar">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            
+            <div class="sidebar-search">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="categorySearch" placeholder="Search categories..." autocomplete="off">
+                </div>
+            </div>
+            
+            <div class="sidebar-content">
+                <h3 class="panel-section-title">Knowledge Categories</h3>
+                <ul class="category-list" id="categoryList">
+                    <!-- Loaded dynamically via JS -->
+                    <li class="loading-placeholder">Loading categories...</li>
+                </ul>
+                
+                <div class="history-section" id="historySection">
+                    <div class="history-header">
+                        <h3 class="panel-section-title">Recent Searches</h3>
+                        <button type="button" id="clearHistoryBtn" class="clear-history-btn">Clear</button>
+                    </div>
+                    <ul class="history-list" id="historyList">
+                        <!-- Loaded dynamically via JS -->
+                        <li class="loading-placeholder">No recent searches</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="status-indicator">
+                    <span class="status-dot pulsing"></span>
+                    <span class="status-label">NLP Engine Online</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ================= MAIN PANEL: CHAT CONSOLE ================= -->
+        <main class="chat-panel">
+            <header class="chat-header">
+                <div class="header-left">
+                    <button class="mobile-toggle-btn" id="openSidebarBtn" aria-label="Open sidebar">
+                        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <div class="chat-bot-details">
+                        <h2 id="activeChatbotTitle">AeroBot Assistant</h2>
+                        <p id="chatSubtext">Ask me anything about programming & technology</p>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <!-- Instant Global Search Bar -->
+                    <div class="global-search-wrapper">
+                        <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="globalFaqSearch" placeholder="Quick search FAQs..." autocomplete="off">
+                        <div class="search-dropdown" id="searchDropdown">
+                            <!-- Instant search results render here -->
+                        </div>
+                    </div>
+                    
+                    <button class="icon-btn tooltip" id="themeToggleBtn" data-tooltip="Toggle Theme">
+                        <!-- Sun Icon (shown in dark mode) -->
+                        <svg id="sunIcon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <!-- Moon Icon (shown in light mode) -->
+                        <svg id="moonIcon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    
+                    <button class="icon-btn tooltip" id="clearChatBtn" data-tooltip="Clear Chat">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                    
+                    <button class="mobile-toggle-btn" id="openBrowserBtn" aria-label="Open FAQ Browser">
+                        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Messages Container -->
+            <div class="chat-messages" id="chatMessages">
+                <!-- Welcome Message -->
+                <div class="message bot-message">
+                    <div class="message-avatar">AI</div>
+                    <div class="message-bubble-wrapper">
+                        <div class="message-bubble">
+                            <p>Hello! I am <strong>NexusFAQ AI</strong>, your intelligent programming assistant. 🚀</p>
+                            <p>I can answer over 500 questions across Python, Java, C, Web Development, Databases, Algorithms, Career Guidance, and more. I also understand <strong>Romanized Telugu queries</strong> (e.g., try asking <em>"Python gurinchi cheppu"</em> or <em>"What is a dangling pointer?"</em>).</p>
+                            <p>Choose a category on the left, use the quick search bar above, or type your query below!</p>
+                        </div>
+                        <span class="message-time">Just now</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Suggestion Chips -->
+            <div class="suggestion-area" id="suggestionArea">
+                <!-- Dynamically populated suggestions -->
+            </div>
+            
+            <!-- Chat Input Area -->
+            <div class="chat-input-panel">
+                <form id="chatForm" class="chat-input-wrapper">
+                    <input type="text" id="chatInput" placeholder="Type a programming question or variation..." autocomplete="off" required>
+                    <button type="submit" class="send-btn" id="sendBtn" aria-label="Send message">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
+                </form>
+            </div>
+        </main>
+
+        <!-- ================= RIGHT PANEL: FAQ ACCORDION BROWSER ================= -->
+        <section class="browser-panel" id="browserPanel">
+            <div class="browser-header">
+                <div class="browser-title-wrapper">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    <h2 id="browserCategoryTitle">Browse: General</h2>
+                </div>
+                <button class="mobile-close-btn" id="closeBrowserBtn" aria-label="Close browser">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            
+            <div class="browser-search">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="browserFaqSearch" placeholder="Filter questions in category..." autocomplete="off">
+                </div>
+            </div>
+            
+            <div class="browser-content">
+                <div class="accordion-list" id="faqAccordionList">
+                    <!-- Dynamically populated accordion items -->
+                    <div class="empty-state">
+                        <p>Select a category from the sidebar to browse FAQs directly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Overlay for mobile drawers -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <div class="browser-overlay" id="browserOverlay"></div>
+        
+    </div>
+
+    <!-- Main JS Application -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
