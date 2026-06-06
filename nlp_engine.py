@@ -10,7 +10,11 @@ from nltk.stem import WordNetLemmatizer
 
 # Set local NLTK data path to keep implementation self-contained
 current_dir = os.path.dirname(os.path.abspath(__file__))
-nltk_data_dir = os.path.join(current_dir, "nltk_data")
+if os.environ.get("VERCEL") or not os.access(current_dir, os.W_OK):
+    nltk_data_dir = "/tmp/nltk_data"
+else:
+    nltk_data_dir = os.path.join(current_dir, "nltk_data")
+
 os.makedirs(nltk_data_dir, exist_ok=True)
 nltk.data.path.append(nltk_data_dir)
 
